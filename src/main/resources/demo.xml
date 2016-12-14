@@ -1,0 +1,22 @@
+<launch>
+    <input>
+        /user/hive/warehouse/test.db/tb_normal_sep
+    </input>
+    <output>
+        /test/xiaolong/out_1
+    </output>
+    <schema>
+        m_schedule_dt,
+        m_schedule_time,
+        dt,
+        iid,
+        cnt,
+        year
+    </schema>
+    <sep>
+        \t
+    </sep>
+    <compress>
+        snappy
+    </compress>
+</launch>

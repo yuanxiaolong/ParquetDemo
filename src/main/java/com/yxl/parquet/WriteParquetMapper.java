@@ -1,5 +1,6 @@
 package com.yxl.parquet;
 
+import com.yxl.util.SchemaUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -12,6 +13,9 @@ import parquet.schema.MessageType;
 import parquet.schema.MessageTypeParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 写parquet mapper
@@ -20,57 +24,65 @@ import java.io.IOException;
  */
 public class WriteParquetMapper extends Mapper<LongWritable, Text, Void, Group> {
 
-    public static final MessageType SCHEMA = MessageTypeParser.parseMessageType(
-//            "message Line {\n" +
-//                    "  required int64 offset;\n" +
-//                    "  required binary line (UTF8);\n" +
+//    public static final MessageType SCHEMA = MessageTypeParser.parseMessageType(
+////            "message Line {\n" +
+////                    "  required int64 offset;\n" +
+////                    "  required binary line (UTF8);\n" +
+////                    "}"
+//            "message hive_schema {\n" +
+//                    "  optional binary remote_addr (UTF8);\n" +
+//                    "  optional binary upstream_addr (UTF8);\n" +
+//                    "  optional binary http_x_forwarded_for (UTF8);\n" +
+//                    "  optional binary visit_time (UTF8);\n" +
+//                    "  optional binary request_uri (UTF8);\n" +
+//                    "  optional binary request_method (UTF8);\n" +
+//                    "  optional binary server_protocol (UTF8);\n" +
+//                    "  optional binary status (UTF8);\n" +
+//                    "  optional binary body_bytes_sent (UTF8);\n" +
+//                    "  optional binary request_time (UTF8);\n" +
+//                    "  optional binary uid (UTF8);\n" +
+//                    "  optional binary uuid (UTF8);\n" +
+//                    "  optional binary user_agent (UTF8);\n" +
+//                    "  optional binary refer (UTF8);\n" +
+//                    "  optional binary request_body (UTF8);\n" +
 //                    "}"
-            "message hive_schema {\n" +
-                    "  optional binary remote_addr (UTF8);\n" +
-                    "  optional binary upstream_addr (UTF8);\n" +
-                    "  optional binary http_x_forwarded_for (UTF8);\n" +
-                    "  optional binary visit_time (UTF8);\n" +
-                    "  optional binary request_uri (UTF8);\n" +
-                    "  optional binary request_method (UTF8);\n" +
-                    "  optional binary server_protocol (UTF8);\n" +
-                    "  optional binary status (UTF8);\n" +
-                    "  optional binary body_bytes_sent (UTF8);\n" +
-                    "  optional binary request_time (UTF8);\n" +
-                    "  optional binary uid (UTF8);\n" +
-                    "  optional binary uuid (UTF8);\n" +
-                    "  optional binary user_agent (UTF8);\n" +
-                    "  optional binary refer (UTF8);\n" +
-                    "  optional binary request_body (UTF8);\n" +
-                    "}"
-    );
+//    );
 
-    private GroupFactory groupFactory = new SimpleGroupFactory(SCHEMA);
+    private MessageType SCHEMA;
+
+    private String sep = "\t";
+
+    private List<String> keys = new ArrayList<String>();
+
+    @Override
+    protected void setup(Context context) throws IOException, InterruptedException {
+        super.setup(context);
+        String str = context.getConfiguration().get("schema");
+        sep = context.getConfiguration().get("sep");
+//        System.out.println("[SETUP] sep: " + sep);
+        keys = Arrays.asList(StringUtils.split(str,","));
+        SCHEMA = SchemaUtils.generateSchema(str);
+    }
+
+    @Override
+    protected void cleanup(Context context) throws IOException, InterruptedException {
+        super.cleanup(context);
+    }
 
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         String line = StringUtils.trim(value.toString());
-        String[] arr = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t");
-        Group group = groupFactory.newGroup();
+//        System.out.println("[USE] sep: " + sep);
+        //FIXME TODO    this is very strange , replace hard code \t to variable sep ,is not working ,read whole line without split
+        //FIXME TODO    appreciate someone who want pull request fix this problem
+        String[] arr = StringUtils.splitByWholeSeparatorPreserveAllTokens(line,"\t");
+        Group group = new SimpleGroupFactory(SCHEMA).newGroup();
         try{
             if (arr != null){
                 //直接获取下标
-                group
-                    .append("remote_addr", arr[0])
-                    .append("upstream_addr", arr[1])
-                    .append("http_x_forwarded_for", arr[2])
-                    .append("visit_time", arr[3])
-                    .append("request_uri",arr[4])
-                    .append("request_method",arr[5])
-                    .append("server_protocol", arr[6])
-                    .append("status",arr[7])
-                    .append("body_bytes_sent",arr[8])
-                    .append("request_time", arr[9])
-                    .append("uid", arr[10])
-                    .append("uuid", arr[11])
-                    .append("user_agent", arr[12])
-                    .append("refer", arr[13])
-                    .append("request_body", arr[14]);
-
+                for (int i = 0; i < arr.length; i++) {
+                    group.append(keys.get(i),arr[i]);
+                }
             }
         }catch (Exception e){
             System.out.println("[ERROR]: map happend error " + e.getMessage());

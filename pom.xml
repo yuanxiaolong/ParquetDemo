@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.yxl</groupId>
-    <artifactId>parquet</artifactId>
+    <artifactId>parquet-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
 
@@ -75,6 +75,21 @@
                     <artifactId>log4j</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+
+        <!-- json xml -->
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <classifier>jdk15</classifier>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.7</version>
         </dependency>
 
     </dependencies>

@@ -1,0 +1,17 @@
+message hive_schema {
+  optional binary remote_addr (UTF8);
+  optional binary upstream_addr (UTF8);
+  optional binary http_x_forwarded_for (UTF8);
+  optional binary visit_time (UTF8);
+  optional binary request_uri (UTF8);
+  optional binary request_method (UTF8);
+  optional binary server_protocol (UTF8);
+  optional binary status (UTF8);
+  optional binary body_bytes_sent (UTF8);
+  optional binary request_time (UTF8);
+  optional binary uid (UTF8);
+  optional binary uuid (UTF8);
+  optional binary user_agent (UTF8);
+  optional binary refer (UTF8);
+  optional binary request_body (UTF8);
+}

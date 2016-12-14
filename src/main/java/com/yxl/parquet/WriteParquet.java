@@ -1,5 +1,6 @@
 package com.yxl.parquet;
 
+import com.yxl.util.SchemaUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.*;
@@ -21,6 +22,7 @@ import parquet.hadoop.example.GroupWriteSupport;
 import parquet.hadoop.metadata.CompressionCodecName;
 import parquet.hadoop.metadata.ParquetMetadata;
 import parquet.schema.MessageType;
+import parquet.schema.MessageTypeParser;
 
 /**
  * 写文件为parquet格式
@@ -35,7 +37,9 @@ public class WriteParquet extends Configured implements Tool {
     public int run(String[] strings) throws Exception {
         String input = strings[0];
         String output = strings[1];
-        String compression = strings[2];
+        String schema = strings[2];
+        String sep = strings[3];
+        String compression = strings[4];
 
         Configuration conf = new Configuration();
 
@@ -46,16 +50,19 @@ public class WriteParquet extends Configured implements Tool {
             fs.delete(out, true);
         }
 
-
+        //1.初始化一个默认的conf,并将外部值传递到conf里,便于在mapper的 setup 方法里调用
         Job job = Job.getInstance();
+        Configuration jobConf = job.getConfiguration();
+        jobConf.set("schema",schema);
+        jobConf.set("sep",sep);
 
         job.setJobName("Convert Text to Parquet");
         job.setJarByClass(getClass());
-
+        //2.设置mapper
         job.setMapperClass(WriteParquetMapper.class);
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(ExampleOutputFormat.class);
-        ExampleOutputFormat.setSchema(job, WriteParquetMapper.SCHEMA);
+        ExampleOutputFormat.setSchema(job, SchemaUtils.generateSchema(schema));
         job.setNumReduceTasks(0);   //不需要reduce
         job.setOutputKeyClass(Void.class);
         job.setOutputValueClass(Group.class);
