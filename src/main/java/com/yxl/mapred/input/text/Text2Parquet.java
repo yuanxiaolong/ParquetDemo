@@ -1,37 +1,28 @@
-package com.yxl.parquet;
+package com.yxl.mapred.input.text;
 
 import com.yxl.util.SchemaUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.*;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import parquet.example.data.Group;
-import parquet.hadoop.ParquetFileReader;
-import parquet.hadoop.example.ExampleInputFormat;
 import parquet.hadoop.example.ExampleOutputFormat;
-import parquet.hadoop.example.GroupWriteSupport;
 import parquet.hadoop.metadata.CompressionCodecName;
-import parquet.hadoop.metadata.ParquetMetadata;
-import parquet.schema.MessageType;
-import parquet.schema.MessageTypeParser;
 
 /**
  * 写文件为parquet格式
  *
  * Created by xiaolong.yuanxl on 16-1-28.
  */
-public class WriteParquet extends Configured implements Tool {
+public class Text2Parquet extends Configured implements Tool {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WriteParquet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Text2Parquet.class);
 
     @Override
     public int run(String[] strings) throws Exception {
@@ -59,7 +50,7 @@ public class WriteParquet extends Configured implements Tool {
         job.setJobName("Convert Text to Parquet");
         job.setJarByClass(getClass());
         //2.设置mapper
-        job.setMapperClass(WriteParquetMapper.class);
+        job.setMapperClass(Text2ParquetMapper.class);
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(ExampleOutputFormat.class);
         ExampleOutputFormat.setSchema(job, SchemaUtils.generateSchema(schema));

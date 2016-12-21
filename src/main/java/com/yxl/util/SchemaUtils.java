@@ -1,13 +1,11 @@
 package com.yxl.util;
 
-import com.yxl.common.LaunchDO;
 import org.apache.commons.lang.StringUtils;
 import parquet.schema.MessageType;
 import parquet.schema.MessageTypeParser;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * 转换 parquet schema 工具

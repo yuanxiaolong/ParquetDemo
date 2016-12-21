@@ -1,4 +1,4 @@
-package com.yxl.parquet;
+package com.yxl.mapred.input.text;
 
 import com.yxl.util.SchemaUtils;
 import org.apache.commons.lang.StringUtils;
@@ -6,11 +6,8 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import parquet.example.data.Group;
-import parquet.example.data.GroupFactory;
 import parquet.example.data.simple.SimpleGroupFactory;
-import parquet.hadoop.ParquetWriter;
 import parquet.schema.MessageType;
-import parquet.schema.MessageTypeParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +19,7 @@ import java.util.List;
  *
  * Created by xiaolong.yuanxl on 16-1-28.
  */
-public class WriteParquetMapper extends Mapper<LongWritable, Text, Void, Group> {
+public class Text2ParquetMapper extends Mapper<LongWritable, Text, Void, Group> {
 
 //    public static final MessageType SCHEMA = MessageTypeParser.parseMessageType(
 ////            "message Line {\n" +

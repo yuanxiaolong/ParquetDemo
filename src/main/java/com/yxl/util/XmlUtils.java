@@ -1,7 +1,8 @@
 package com.yxl.util;
 
 import com.thoughtworks.xstream.XStream;
-import com.yxl.common.LaunchDO;
+import com.yxl.common.ParquetInputLaunchDO;
+import com.yxl.common.TextInputLaunchDO;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedReader;
@@ -15,10 +16,16 @@ import java.io.FileReader;
 public class XmlUtils {
 
 
-    public static LaunchDO toLaunchProp(String path) throws Exception{
+    public static TextInputLaunchDO toTextLaunchProp(String path) throws Exception{
         XStream xStream = new XStream();
-        xStream.alias("launch",LaunchDO.class);
-        return (LaunchDO)xStream.fromXML(mkString(path));
+        xStream.alias("launch",TextInputLaunchDO.class);
+        return (TextInputLaunchDO)xStream.fromXML(mkString(path));
+    }
+
+    public static ParquetInputLaunchDO toParquetLaunchProp(String path) throws Exception{
+        XStream xStream = new XStream();
+        xStream.alias("launch",TextInputLaunchDO.class);
+        return (ParquetInputLaunchDO)xStream.fromXML(mkString(path));
     }
 
 
@@ -33,7 +40,7 @@ public class XmlUtils {
     }
 
     public static void main(String[] args) throws Exception{
-        LaunchDO launchDO = toLaunchProp("/Users/mfw/Documents/workspace_java/parquetDemo/src/main/resources/demo.xml");
+        TextInputLaunchDO launchDO = toTextLaunchProp("/Users/mfw/Documents/workspace_java/parquetDemo/src/main/resources/demo.xml");
         System.out.println(String.valueOf(launchDO.getSep()));
     }
 

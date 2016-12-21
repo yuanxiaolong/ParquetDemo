@@ -1,6 +1,6 @@
 ## 介绍
 
-此工程用于通用转换 textfile 为 parquetfile 主要是应用于 提高hive表的查询效率
+此工程用于通用转换 textfile或parquetfile 为 parquetfile 主要是应用于 提高hive表的查询效率或ETL处理
 
 
 ## 准备
@@ -40,6 +40,7 @@
     <compress>
         snappy
     </compress>
+    <isOverwrite>true</isOverwrite>
 </launch>
 ```
 
@@ -50,12 +51,12 @@
 * schema 生成的parquet文件元信息
 * sep 输入hdfs文件的分隔符
 * compress 压缩形式,可选有 snappy 或 gzip 两种
+* isOverwrite 是否覆盖写入,如果为true会先删除output再执行MR,请仔细.
 
 
 ## 遗留问题
 
-目前只支持源文件为 ```\t``` 分隔
+目前只支持textfile源文件为 ```\t``` 分隔
 
 ## 改进
 
-next: 可以用 Avro 来做 Writer 写入 parquet 文件
