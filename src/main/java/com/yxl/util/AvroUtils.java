@@ -32,20 +32,20 @@ public class AvroUtils {
                 String type = arr[1];
                 object.put("name",name);
                 if (StringUtils.equalsIgnoreCase("long",type)){
-                    object.put("type","long");
-                    object.put("default",-1L);
+                    object.put("type","[ \"$null$\",\"long\" ]");
+                    object.put("default","null");
                 }else if (StringUtils.equalsIgnoreCase("double",type)){
-                    object.put("type","double");
-                    object.put("default",0.0D);
+                    object.put("type","[ \"$null$\",\"double\" ]");
+                    object.put("default","null");
                 }else if (StringUtils.equalsIgnoreCase("boolean",type)){
-                    object.put("type","boolean");
-                    object.put("default",false);
+                    object.put("type","[ \"$null$\",\"boolean\" ]");
+                    object.put("default","null");
                 }else if (StringUtils.equalsIgnoreCase("int",type)){
-                    object.put("type","int");
-                    object.put("default",-1);
+                    object.put("type","[ \"$null$\",\"int\" ]");
+                    object.put("default","null");
                 }else {
-                    object.put("type","string");
-                    object.put("default","");
+                    object.put("type","[ \"$null$\",\"string\" ]");
+                    object.put("default","null");
                 }
             }else{
                 object.put("name",field);
@@ -57,6 +57,8 @@ public class AvroUtils {
 
         jsonObject.put("fields", array);
 
-        return jsonObject.toString();
+        String s = jsonObject.toString();
+
+        return StringUtils.replace(s, "$", "");//用$的目的是 json无法直接生成 "null" 这样的字符串
     }
 }
