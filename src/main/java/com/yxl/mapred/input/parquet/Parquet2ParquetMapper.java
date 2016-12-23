@@ -61,6 +61,9 @@ public class Parquet2ParquetMapper extends Mapper<Void, GenericRecord, Void, Gen
                 }
             }else{
                 ByteBuffer bf = (ByteBuffer) value.get(k);
+                if (bf == null){
+                    continue;
+                }
                 b.set(k,new String(bf.array(),"UTF8"));
             }
         GenericRecord output = b.build();
